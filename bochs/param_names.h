@@ -50,6 +50,8 @@
 #define BXPN_CPUID_LIMIT_WINNT           "cpu.cpuid_limit_winnt"
 #define BXPN_MWAIT_IS_NOP                "cpu.mwait_is_nop"
 #define BXPN_BRAND_STRING                "cpu.brand_string"
+#define BXPN_CPU_JIT_ENABLED             "cpu.jit_enabled"
+#define BXPN_CPU_JIT_CACHE_SIZE          "cpu.jit_cache_size"
 #define BXPN_MEMORY                      "memory.standard.ram"
 #define BXPN_MEM_SIZE                    "memory.standard.ram.guest"
 #define BXPN_HOST_MEM_SIZE               "memory.standard.ram.host"

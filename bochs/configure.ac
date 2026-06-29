@@ -718,6 +718,22 @@ AC_ARG_ENABLE(trace-linking,
     ]
   )
 
+AC_MSG_CHECKING(for trace-caching JIT support)
+AC_ARG_ENABLE(jit,
+  AS_HELP_STRING([--enable-jit], [enable the x86-64 trace-caching JIT compiler (no); requires --enable-x86-64 and --disable-handlers-chaining]),
+  [if test "$enableval" = yes; then
+    AC_MSG_RESULT(yes)
+    use_jit=1
+   else
+    AC_MSG_RESULT(no)
+    use_jit=0
+   fi],
+  [
+    AC_MSG_RESULT(no)
+    use_jit=0
+    ]
+  )
+
 AC_MSG_CHECKING(support for configurable MSR registers)
 AC_ARG_ENABLE(configurable-msrs,
   AS_HELP_STRING([--enable-configurable-msrs], [support for configurable MSR registers (yes if cpu level >= 5)]),
@@ -961,6 +977,29 @@ if test "$enable_trace_linking" = 1; then
   AC_DEFINE(BX_ENABLE_TRACE_LINKING, 1)
 else
   AC_DEFINE(BX_ENABLE_TRACE_LINKING, 0)
+fi
+
+# The trace-caching JIT is only valid on an x86-64 host with handler
+# chaining disabled (chained handlers tail-call the next instruction and
+# would double-execute if called per-instruction by the JIT).
+if test "$use_jit" = 1; then
+  if test "$use_x86_64" = 0; then
+    echo "ERROR: JIT requires --enable-x86-64 (64-bit guest RIP)"
+    use_jit=0
+  fi
+  if test "$speedup_handlers_chaining" = 1; then
+    echo "ERROR: JIT requires --disable-handlers-chaining"
+    use_jit=0
+  fi
+  if test "$use_smp" = 1; then
+    echo "ERROR: JIT currently requires --disable-smp (single-CPU build)"
+    use_jit=0
+  fi
+fi
+if test "$use_jit" = 1; then
+  AC_DEFINE(BX_SUPPORT_JIT, 1)
+else
+  AC_DEFINE(BX_SUPPORT_JIT, 0)
 fi
 
 READLINE_LIB=""

@@ -43,6 +43,7 @@ void flushICaches(void)
 {
   for (unsigned i=0; i<BX_SMP_PROCESSORS; i++) {
     BX_CPU(i)->iCache.flushICacheEntries();
+    BX_CPU(i)->jit.flush();
     BX_CPU(i)->async_event |= BX_ASYNC_EVENT_STOP_TRACE;
   }
 
@@ -63,6 +64,7 @@ void flushSMC(bxICacheEntry_c *e)
 {
   if (e->pAddr != BX_ICACHE_INVALID_PHY_ADDRESS) {
     e->pAddr = BX_ICACHE_INVALID_PHY_ADDRESS;
+    e->jit_code = NULL;  // drop any JIT translation for this trace
 #if BX_SUPPORT_HANDLERS_CHAINING_SPEEDUPS
     if (! bx_dbg.debugger_active) {
       extern void genDummyICacheEntry(bxInstruction_c *i);

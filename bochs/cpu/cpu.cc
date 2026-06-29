@@ -177,6 +177,29 @@ void BX_CPU_C::cpu_loop(void)
     bxICacheEntry_c *entry = getICacheEntry();
     bxInstruction_c *i = entry->i;
 
+#if BX_SUPPORT_JIT
+    // If a native translation exists for this trace, run it directly. The
+    // stub returns when the trace ends or an async_event is raised; the
+    // surrounding logic is identical to the interpreter path below. Never
+    // run JIT code under the internal debugger or gdbstub, which need
+    // per-instruction control. The runner is SEH-guarded on Windows/MSVC;
+    // if a stub faults, the entry is dropped and the interpreter runs the
+    // trace instead.
+    if (entry->jit_code != NULL && ! bx_dbg.debugger_active
+#if BX_GDBSTUB
+        && ! bx_dbg.gdbstub_enabled
+#endif
+       ) {
+      if (bx_jit_run_stub(entry->jit_code)) {
+        BX_CPU_THIS_PTR async_event &= ~BX_ASYNC_EVENT_STOP_TRACE;
+        continue;
+      }
+      entry->jit_code = NULL;
+      BX_CPU_THIS_PTR jit.note_fault();
+      // fall through to the interpreter path for this trace
+    }
+#endif
+
 #if BX_SUPPORT_HANDLERS_CHAINING_SPEEDUPS
     for(;;) {
       // want to allow changing of the instruction inside instrumentation callback
@@ -301,6 +324,13 @@ bxICacheEntry_c* BX_CPU_C::getICacheEntry(void)
     // iCache miss. No validated instruction with matching fetch parameters is in the iCache.
     INC_ICACHE_STAT(iCacheMisses);
     entry = serveICacheMiss((Bit32u) eipBiased, pAddr);
+#if BX_SUPPORT_JIT
+    // Try to compile the freshly decoded trace into native code. On failure
+    // (or when the JIT is disabled) entry->jit_code stays NULL and the
+    // interpreter runs the trace unchanged.
+    if (BX_CPU_THIS_PTR jit.enabled())
+      BX_CPU_THIS_PTR jit.maybe_compile(entry);
+#endif
   }
 
 #if BX_SUPPORT_CET

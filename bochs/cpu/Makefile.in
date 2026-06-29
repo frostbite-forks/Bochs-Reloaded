@@ -45,6 +45,8 @@ OBJS = \
 	cpu.o \
 	event.o \
 	icache.o \
+	jit/bx_jit.o \
+	jit/bx_jit_x86_64.o \
 	decoder/fetchdecode32.o \
 	decoder/fetchdecode_opmap_0f38.o \
 	decoder/fetchdecode_opmap_0f3a.o \
@@ -173,6 +175,7 @@ clean:
 	@RMCOMMAND@ *.o
 	@RMCOMMAND@ *.a
 	@RMCOMMAND@ decoder@SLASH@*.o
+	@RMCOMMAND@ jit@SLASH@*.o
 
 dist-clean: clean
 	@RMCOMMAND@ Makefile

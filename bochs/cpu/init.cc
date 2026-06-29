@@ -247,6 +247,10 @@ void BX_CPU_C::initialize(void)
 #endif
 
   init_statistics();
+
+  // Set up the trace-caching JIT (reads cpu.jit.* params). When the JIT is
+  // not compiled in or disabled, this is a cheap no-op.
+  BX_CPU_THIS_PTR jit.init(this);
 }
 
 // statistics

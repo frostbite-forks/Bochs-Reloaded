@@ -111,6 +111,11 @@ struct bxICacheEntry_c
 
   Bit32u tlen;          // Trace length in instructions
   bxInstruction_c *i;
+
+  // JIT: pointer to native code compiled for this trace, or NULL when the
+  // trace has not (or can no longer) be run from the JIT. Cleared on every
+  // icache flush and on self-modifying-code invalidation.
+  void *jit_code;
 };
 
 #define BX_MAX_TRACE_LENGTH 32
@@ -151,6 +156,7 @@ public:
     }
     e->i = &mpool[mpindex];
     e->tlen = 0;
+    e->jit_code = NULL;  // freshly allocated slot: no JIT code yet
   }
 
   BX_CPP_INLINE void commit_trace(unsigned len) { mpindex += len; }
@@ -208,6 +214,7 @@ BX_CPP_INLINE void bxICache_c::flushICacheEntries(void)
   for (unsigned i=0; i<BxICacheEntries; i++, e++) {
     e->pAddr = BX_ICACHE_INVALID_PHY_ADDRESS;
     e->traceMask = 0;
+    e->jit_code = NULL;
   }
 
   // flush all page split entries

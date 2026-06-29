@@ -21,6 +21,7 @@ export DLLTOOL
             --enable-sb16 \
             --enable-ne2000 \
             --enable-all-optimizations \
+            --disable-handlers-chaining \
             --enable-static-link \
             --enable-cpu-level=6 \
             --enable-3dnow \
@@ -46,5 +47,7 @@ export DLLTOOL
             --enable-debugger \
             --enable-debugger-gui \
             --disable-readline \
+            --enable-jit \
+            --enable-smp \
             --with-win32 --with-rfb --with-nogui \
             ${CONFIGURE_ARGS}

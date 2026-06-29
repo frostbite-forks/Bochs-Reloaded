@@ -704,6 +704,17 @@ void bx_init_options()
       "Don't put CPU to sleep state by MWAIT",
       0);
 #endif
+#if BX_SUPPORT_JIT
+  new bx_param_bool_c(cpu_param,
+      "jit_enabled", "Enable trace-caching JIT compiler",
+      "Enable the trace-caching JIT (requires --enable-jit --disable-handlers-chaining at build time)",
+      1);
+  new bx_param_num_c(cpu_param,
+      "jit_cache_size", "JIT translation cache size (KB)",
+      "Size of the JIT translation cache in KB; 0 disables the JIT",
+      0, BX_MAX_BIT32U,
+      8192);
+#endif
 #if BX_CONFIGURE_MSRS
   new bx_param_filename_c(cpu_param,
       "msrs",

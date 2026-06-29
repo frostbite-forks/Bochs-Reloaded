@@ -736,6 +736,7 @@ typedef struct
 #include "lazy_flags.h"
 #include "tlb.h"
 #include "icache.h"
+#include "jit/bx_jit.h"
 
 // general purpose register
 #if BX_SUPPORT_X86_64
@@ -1381,6 +1382,11 @@ public: // for now...
   // with the host cache lines.
   bxICache_c iCache BX_CPP_AlignN(32);
   Bit32u fetchModeMask;
+
+  // Trace-caching JIT. Owns a translation cache and (when enabled) native
+  // code pointers stored on each icache entry's jit_code field. When
+  // BX_SUPPORT_JIT is 0 this is an empty no-op object.
+  bxJitC jit;
 
   struct {
     bx_address rm_addr;       // The address offset after resolution
