@@ -150,15 +150,26 @@ void bx_slowdown_timer_c::handle_timer()
    *      ^>Bochs runs at normal
    */
   if(wanttime > (totaltime+REALTIME_Q)) {
+#if BX_SUPPORT_JIT
+    // When the JIT is enabled, do NOT sleep-throttle to real time. The JIT's
+    // purpose is to run the guest faster than real time; this sleep would
+    // otherwise absorb the entire speedup (and on Windows the coarse sleep
+    // granularity overshoots badly, capping throughput well below m_ips).
+    // Guest timers still fire normally from tick1() emitted into each stub.
+    bx_param_bool_c *jit_enabled = SIM->get_param_bool(BXPN_CPU_JIT_ENABLED);
+    if (jit_enabled == NULL || ! jit_enabled->get())
+#endif
+    {
 #if BX_HAVE_USLEEP
-    usleep(s.Q);
+      usleep(s.Q);
 #elif BX_HAVE_MSLEEP
-    msleep(usectomsec((Bit32u)s.Q));
+      msleep(usectomsec((Bit32u)s.Q));
 #elif BX_HAVE_SLEEP
-    sleep(usectosec(s.Q));
+      sleep(usectosec(s.Q));
 #else
 #error do not know have to sleep
-#endif    //delay(wanttime-totaltime);
+#endif
+    }
     /* alternatively: delay(Q);
      * This works okay because we share the delay between
      * two time quantums.
