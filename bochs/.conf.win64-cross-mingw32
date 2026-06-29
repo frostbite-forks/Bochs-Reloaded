@@ -20,7 +20,6 @@ export DLLTOOL
 ./configure --host=x86_64-linux --target=x86_64-mingw32 \
             --enable-sb16 \
             --enable-ne2000 \
-            --enable-all-optimizations \
             --disable-handlers-chaining \
             --enable-static-link \
             --enable-cpu-level=6 \
@@ -48,6 +47,5 @@ export DLLTOOL
             --enable-debugger-gui \
             --disable-readline \
             --enable-jit \
-            --enable-smp \
             --with-win32 --with-rfb --with-nogui \
             ${CONFIGURE_ARGS}
