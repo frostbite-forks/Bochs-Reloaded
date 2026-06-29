@@ -31,7 +31,7 @@
 #include "../cpu.h"
 #include "bx_jit.h"
 #include "bx_jit_x86_64.h"
-#define LOG_THIS /* none */
+#define LOG_THIS BX_CPU_THIS_PTR
 
 #include "gui/siminterface.h"
 #include "param_names.h"
