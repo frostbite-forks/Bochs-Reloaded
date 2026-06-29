@@ -32,7 +32,7 @@
 #ifndef BX_JIT_H
 #define BX_JIT_H
 
-#include "jit/bx_jit_config.h"
+#include "bx_jit_config.h"
 
 class bxICacheEntry_c;
 class BX_CPU_C;

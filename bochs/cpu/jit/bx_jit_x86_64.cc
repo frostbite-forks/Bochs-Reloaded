@@ -49,10 +49,10 @@
 // x64, rdi on System V x64). No "this" pointer is passed.
 
 #include "bochs.h"
-#include "cpu.h"
+#include "../cpu.h"
 #include "pc_system.h"
-#include "jit/bx_jit.h"
-#include "jit/bx_jit_x86_64.h"
+#include "bx_jit.h"
+#include "bx_jit_x86_64.h"
 
 #include <string.h>
 

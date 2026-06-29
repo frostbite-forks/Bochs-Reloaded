@@ -28,9 +28,9 @@
 
 #define NEED_CPU_REG_SHORTCUTS 1
 #include "bochs.h"
-#include "cpu.h"
-#include "jit/bx_jit.h"
-#include "jit/bx_jit_x86_64.h"
+#include "../cpu.h"
+#include "bx_jit.h"
+#include "bx_jit_x86_64.h"
 #define LOG_THIS /* none */
 
 #include "gui/siminterface.h"

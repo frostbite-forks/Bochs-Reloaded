@@ -27,7 +27,7 @@
 #ifndef BX_JIT_X86_64_H
 #define BX_JIT_X86_64_H
 
-#include "jit/bx_jit_config.h"
+#include "bx_jit_config.h"
 
 #if BX_SUPPORT_JIT
 
